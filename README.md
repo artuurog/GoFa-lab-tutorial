@@ -40,6 +40,10 @@ Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targe
 1. Read [Safety](SAFETY.md).
 1. Follow [Lesson 00](lessons/00_setup.md).
 
+## RobotStudio stations
+
+A simple RobotStudio environment station can be found [here](https://github.com/artuurog/ABB_GoFa_socket/tree/main/envs)
+
 ## Additional resources
 
 1. ABB RAPID manual [PDF](https://library.e.abb.com/public/b227fcd260204c4dbeb8a58f8002fe64/Rapid_instructions.pdf)
