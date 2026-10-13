@@ -1,4 +1,4 @@
-# ABB GoFa Guided Tutorial
+# ABB GoFa Tutorial
 
 A brief introduction to ABB GoFa programming with RobotStudio, RAPID, Python TCP communication, and EGM.
 
@@ -11,23 +11,15 @@ By the end of this tutorial, students will be able to:
 3. Exchange discrete commands and state messages between Python and RAPID over TCP.
 4. Run a bounded EGM trajectory in simulation, then repeat the validated procedure on a real robot under instructor supervision.
 
-## Intended use
-
-- Audience: programmers new to ABB robotics.
-- Duration: 4–6 hours.
-- Language: technical English.
-- Teaching format: a linear tutorial. There are no separate exercises.
-- Target: ABB GoFa with OmniCore, RobotWare 7.x, and a recent RobotStudio release.
-
 ## Tutorial path
 
-| Step | Topic | Estimated time | Result |
+| Step | Topic | Result |
 | --- | --- | ---: | --- |
-| 00 | Setup and safety | 30 min | A virtual controller is ready. |
-| 01 | RAPID motion | 60 min | A safe point-to-point sequence runs in simulation. |
-| 02 | TCP commands and states | 75 min | Python exchanges newline-delimited messages with RAPID. |
-| 03 | EGM guided motion | 90 min | A small bounded trajectory is validated in simulation. |
-| 04 | Integrated demonstration | 30 min | TCP selects the demonstration and EGM supplies motion setpoints. |
+| 00 | Setup and safety | A virtual controller is ready. |
+| 01 | RAPID motion | A safe point-to-point sequence runs in simulation. |
+| 02 | TCP commands and states | Python exchanges newline-delimited messages with RAPID. |
+| 03 | EGM guided motion | A small bounded trajectory is validated in simulation. |
+| 04 | Integrated demonstration | TCP selects the demonstration and EGM supplies motion setpoints. |
 
 Read the lessons in order. Do not use the real-robot path until the corresponding simulation path has been completed and signed off by the instructor.
 
