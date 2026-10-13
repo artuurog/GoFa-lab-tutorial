@@ -21,8 +21,6 @@ By the end of this tutorial, students will be able to:
 | 03 | EGM guided motion | A small bounded trajectory is validated in simulation. |
 | 04 | Integrated demonstration | TCP selects the demonstration and EGM supplies motion setpoints. |
 
-Read the lessons in order. Do not use the real-robot path until the corresponding simulation path has been completed and signed off by the instructor.
-
 ## Repository map
 
 ```text
@@ -35,13 +33,12 @@ assets/        Diagrams and screenshots used by the lessons
 
 ## Safety boundary
 
-This repository is an educational starting point, not a production robot application. Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targets, reduced speed, and instructor supervision.
+Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targets, reduced speed, and instructor supervision.
 
 ## Start here
 
-1. Read [Compatibility](COMPATIBILITY.md).
-2. Read [Safety](SAFETY.md).
-3. Follow [Lesson 00](lessons/00_setup.md).
+1. Read [Safety](SAFETY.md).
+1. Follow [Lesson 00](lessons/00_setup.md).
 
 ## Additional resources
 
