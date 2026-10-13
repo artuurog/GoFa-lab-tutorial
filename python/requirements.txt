@@ -1,0 +1,4 @@
+# Lesson 02 uses only the Python standard library.
+# Add the tested EGM client dependency here after the lab's RobotWare 7.x
+# configuration and Python version have been validated.
+
