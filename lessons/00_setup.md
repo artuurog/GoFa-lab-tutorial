@@ -6,8 +6,8 @@ Create or open the approved GoFa RobotStudio station and start its virtual contr
 
 ## Before you begin
 
-- RobotStudio is installed.
-- The instructor has supplied the tested RobotWare 7.x baseline.
+- A recent version of RobotStudio is installed.
+- Install the same version of RobotWare as the one in the real robot.
 - You have read [Safety](../SAFETY.md).
 
 ## Procedure
