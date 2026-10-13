@@ -13,22 +13,34 @@ By the end of this tutorial, students will be able to:
 
 ## Tutorial path
 
-| Step | Topic | Result |
+| Lesson | Topic | Result |
 | --- | --- | --- |
-| 00 | Setup and safety | A virtual controller is ready. |
-| 01 | RAPID motion | A safe point-to-point sequence runs in simulation. |
-| 02 | TCP commands and states | Python exchanges newline-delimited messages with RAPID. |
-| 03 | EGM guided motion | A small bounded trajectory is validated in simulation. |
-| 04 | Integrated demonstration | TCP selects the demonstration and EGM supplies motion setpoints. |
+| [00](lessons/00_setup.md) | Setup and safety | A virtual controller is ready. |
+| [01](lessons/01_rapid_motion.md) | RAPID motion | A safe point-to-point sequence runs in simulation. |
+| [02](lessons/02_tcp_protocol.md) | TCP commands and states | Python exchanges newline-delimited messages with RAPID. |
+| [03](lessons/03_egm_motion.md) | EGM guided motion | A small bounded trajectory is validated in simulation. |
+| [04](lessons/04_integrated_demo.md) | Integrated demonstration | TCP selects the demonstration and EGM supplies motion setpoints. |
 
 ## Repository map
 
 ```text
-lessons/       Guided student-facing steps
-rapid/         RAPID modules, organized by lesson
-python/        Small Python scripts and configuration template
-robotstudio/   Station setup and instructor-only configuration notes
-assets/        Diagrams and screenshots used by the lessons
+SAFETY.md                    Safety rules and real-robot checklist
+lessons/
+  00_setup.md                Setup and safety
+  01_rapid_motion.md         MoveJ / MoveL motion
+  02_tcp_protocol.md         TCP message protocol
+  03_egm_motion.md           EGM guided motion
+  04_integrated_demo.md      TCP + EGM demonstration
+rapid/
+  lesson_01_motion.mod       RAPID module: named-position MoveJ/MoveL sequence
+  lesson_02_tcp_server.mod   RAPID module: TCP socket server
+  lesson_02_python_client.py Python client that streams poses to the TCP server
+python/
+  protocol.py                Newline-delimited TCP protocol helpers
+  tcp_client.py              Sends one command to the RAPID TCP service
+  egm_trajectory.py          Bounded Cartesian EGM trajectory (Lesson 03)
+  settings.py                Host, port and EGM configuration (instructor-provided values)
+  requirements.txt           Python dependencies (EGM client)
 ```
 
 ## Safety boundary
