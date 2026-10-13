@@ -1,6 +1,6 @@
 # ABB GoFa Guided Tutorial
 
-A concise, technically guided introduction to ABB GoFa programming with RobotStudio, RAPID, Python TCP communication, and EGM.
+A brief introduction to ABB GoFa programming with RobotStudio, RAPID, Python TCP communication, and EGM.
 
 ## Learning outcomes
 
@@ -51,3 +51,7 @@ This repository is an educational starting point, not a production robot applica
 2. Read [Safety](SAFETY.md).
 3. Follow [Lesson 00](lessons/00_setup.md).
 
+## Additional resources
+
+1. ABB RAPID manual [PDF](https://library.e.abb.com/public/b227fcd260204c4dbeb8a58f8002fe64/Rapid_instructions.pdf)
+1. ABB EGM manual [PDF](https://library.e.abb.com/public/e7938c068b3742a7aead2dc6cbf64cd7/3HAC073318%20AM%20Externally%20Guided%20Motion%20OmniCore-en.pdf?x-sign=RTIyDIT44nlpAGKgL46AN1cKX7GScwgevIho0H2oGCTViphMVDm%2FAPfWDWrpxLoP)
