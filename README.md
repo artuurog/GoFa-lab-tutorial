@@ -14,7 +14,7 @@ By the end of this tutorial, students will be able to:
 ## Tutorial path
 
 | Step | Topic | Result |
-| --- | --- | ---: | --- |
+| --- | --- | --- |
 | 00 | Setup and safety | A virtual controller is ready. |
 | 01 | RAPID motion | A safe point-to-point sequence runs in simulation. |
 | 02 | TCP commands and states | Python exchanges newline-delimited messages with RAPID. |
