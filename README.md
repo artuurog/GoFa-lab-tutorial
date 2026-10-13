@@ -35,6 +35,7 @@ rapid/
   lesson_01_motion.mod       RAPID module: named-position MoveJ/MoveL sequence
   lesson_02_tcp_server.mod   RAPID module: TCP socket server
   lesson_02_python_client.py Python client that streams poses to the TCP server
+  lesson_03_egm.mod          RAPID module: EGM motion setup
 python/
   protocol.py                Newline-delimited TCP protocol helpers
   tcp_client.py              Sends one command to the RAPID TCP service
