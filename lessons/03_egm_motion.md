@@ -14,10 +14,24 @@ Run a small instructor-configured EGM trajectory in simulation.
 
 1. Read the [instructor EGM configuration guide](../robotstudio/instructor/egm-configuration.md).
 2. Verify the reference pose and motion limits in RobotStudio.
-3. Copy the validated EGM settings into `python/settings.py`.
-4. Read `python/egm_trajectory.py` before running it.
-5. Run the trajectory in the virtual controller.
-6. Repeat on the real robot only through the instructor’s commissioning procedure.
+3. Install the Python dependency: `python -m pip install -r python/requirements.txt`.
+4. Copy `python/settings.example.py` to `python/settings.py` and enter the validated EGM port, reference position, and quaternion.
+5. Start the instructor-approved RAPID program in EGM pose-guidance mode.
+6. Run `python python/egm_trajectory.py`.
+7. Confirm that the script prints `EGM feedback received` before it sends the bounded circle.
+8. Repeat on the real robot only through the instructor’s commissioning procedure.
+
+## Python trajectory
+
+`egm_trajectory.py` waits for the controller’s first UDP packet, then sends a
+circle in the YZ plane around `EGM_REFERENCE_POSITION_MM`. The circle has a
+maximum radius of 5 mm, fixed orientation, a maximum frequency of 0.2 Hz, and
+a maximum duration of 30 seconds. The configured quaternion is `[w,x,y,z]`.
+
+The script aborts when feedback is missing for three consecutive receive
+periods and sends the configured reference position once before a normal exit.
+It does not start, stop, or configure EGM on the controller: those actions
+remain in the instructor-approved RAPID program and RobotStudio configuration.
 
 ## Checkpoint
 
