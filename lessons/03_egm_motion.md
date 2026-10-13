@@ -15,23 +15,27 @@ Run a small instructor-configured EGM trajectory in simulation.
 1. Read the [instructor EGM configuration guide](../robotstudio/instructor/egm-configuration.md).
 2. Verify the reference pose and motion limits in RobotStudio.
 3. Install the Python dependency: `python -m pip install -r python/requirements.txt`.
-4. Copy `python/settings.example.py` to `python/settings.py` and enter the validated EGM port, reference position, and quaternion.
-5. Start the instructor-approved RAPID program in EGM pose-guidance mode.
-6. Run `python python/egm_trajectory.py`.
-7. Confirm that the script prints `EGM feedback received` before it sends the bounded circle.
+4. Load `rapid/lesson_03_egm.mod`, teach `pStart` inside the workspace, and configure the UdpUc device (Remote Port = script `--port`).
+5. Run `python python/egm_trajectory.py` (it waits for the controller).
+6. Start the RAPID program in simulation.
+7. Confirm that the script prints `First EGM message received` and then streams the path.
 8. Repeat on the real robot only through the instructor’s commissioning procedure.
 
 ## Python trajectory
 
-`egm_trajectory.py` waits for the controller’s first UDP packet, then sends a
-circle in the YZ plane around `EGM_REFERENCE_POSITION_MM`. The circle has a
-maximum radius of 5 mm, fixed orientation, a maximum frequency of 0.2 Hz, and
-a maximum duration of 30 seconds. The configured quaternion is `[w,x,y,z]`.
+`egm_trajectory.py` is the EGM sensor (UDP server, no external packages). Start
+it first; it waits for the controller's first packet, then answers every 4 ms
+packet with one setpoint. It interpolates a pre-defined waypoint path linearly
+with a trapezoidal speed profile (default 40 mm/s, 80 mm/s²) and holds the
+orientation reported by the robot. All setpoints must stay inside
+X −400…−200, Y 20…300, Z 40…300 mm (world frame); the robot's start position
+must also be inside this box (`rapid/lesson_03_egm.mod`, `pStart`, must be
+taught on the station).
 
-The script aborts when feedback is missing for three consecutive receive
-periods and sends the configured reference position once before a normal exit.
-It does not start, stop, or configure EGM on the controller: those actions
-remain in the instructor-approved RAPID program and RobotStudio configuration.
+The script aborts on lost feedback (3 timeouts), motors off, RAPID stopped,
+tracking error above 30 mm, or sustained `utilizationRate` above 100 %. It
+does not configure EGM: that is done by `rapid/lesson_03_egm.mod` and the
+instructor's RobotStudio configuration. Run: `python python/egm_trajectory.py --port 6510`.
 
 ## Checkpoint
 
