@@ -8,7 +8,6 @@ Run a small instructor-configured EGM trajectory in simulation.
 
 - TCP selects or stops the demonstration and reports state.
 - EGM provides bounded motion setpoints only.
-- The instructor configures EGM and validates the reference pose before students run the Python script.
 
 ## Procedure
 
