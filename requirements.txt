@@ -1,0 +1,6 @@
+# Third-party packages needed to run this repo.
+# Everything else (socket, time, argparse, ...) is in the Python standard library.
+
+# EGM/egm_pb2.py was generated with protobuf 7.36.2 and checks at import time
+# that the installed runtime is at least that version.
+protobuf>=7.36.2,<8

@@ -15,10 +15,8 @@ By the end of this tutorial, students will be able to:
 
 ```text
 SAFETY.md                      Safety rules and real-robot checklist
-RAPID/                         Step-by-step RAPID lessons
-  lesson_01_motion.mod         RAPID module: named-position MoveJ/MoveL sequence
-  lesson_02_tcp_server.mod     RAPID module: TCP socket server
-  lesson_02_python_client.py   Python client that streams poses to the TCP server
+RAPID/                         Minimal RAPID motion example
+  motion.mod                   RAPID module: MoveJ/MoveL sequence between pre-programmed targets
 TCP/                           Minimal TCP waypoint example
   TCP_Waypoints.modx           RAPID module: receives "dx,dy,dz" offsets and reaches each with MoveJ
   tcp_client.py                Python client (standard library only) that sends the waypoints
@@ -36,12 +34,17 @@ Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targe
 ## Start here
 
 1. Read [Safety](SAFETY.md).
-1. Start with [RAPID/lesson_01_motion.mod](RAPID/lesson_01_motion.mod) in a RobotStudio virtual controller.
+1. Start with [RAPID/motion.mod](RAPID/motion.mod) in a RobotStudio virtual controller.
 1. Continue with the TCP example ([TCP/](TCP/)) and then the EGM example ([EGM/](EGM/)).
 
 ## Running the examples
 
-All waypoints are offsets from the robot pose at start, and the joint start poses in the RAPID modules are placeholders: calibrate them for your cell before use.
+The robtargets and the `gripper` tooldata in the RAPID modules are placeholders: teach or validate them for your cell before use. In the TCP and EGM examples all waypoints are offsets from the robot pose at start.
+
+### RAPID motion
+
+1. Load `RAPID/motion.mod` on the controller (virtual controller first).
+1. Run `main`. The robot goes `home` → `approach` (`MoveJ`), `point_a` → `point_b` (`MoveL`), then back to `approach` and `home`, stopping exactly at each target (`fine` zone).
 
 ### TCP
 
