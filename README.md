@@ -15,6 +15,7 @@ By the end of this tutorial, students will be able to:
 
 ```text
 SAFETY.md                      Safety rules and real-robot checklist
+requirements.txt               Python dependencies (protobuf, for EGM)
 RAPID/                         Minimal RAPID motion example
   motion.mod                   RAPID module: MoveJ/MoveL sequence between pre-programmed targets
 TCP/                           Minimal TCP waypoint example
@@ -37,6 +38,20 @@ Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targe
 1. Start with [RAPID/motion.mod](RAPID/motion.mod) in a RobotStudio virtual controller.
 1. Continue with the TCP example ([TCP/](TCP/)) and then the EGM example ([EGM/](EGM/)).
 
+## Python environment
+
+Only the EGM example needs a third-party package (`protobuf`, listed in [requirements.txt](requirements.txt)). The TCP client uses the standard library only. To keep the install isolated, create a conda environment from the repository root:
+
+```bash
+conda create -n gofa-tutorial python=3.11
+conda activate gofa-tutorial
+pip install -r requirements.txt
+```
+
+Check the install with `python -c "import google.protobuf; print(google.protobuf.__version__)"`. Run `conda activate gofa-tutorial` in every new terminal before running the Python scripts.
+
+To remove the environment later: `conda deactivate`, then `conda env remove -n gofa-tutorial`.
+
 ## Running the examples
 
 The robtargets and the `gripper` tooldata in the RAPID modules are placeholders: teach or validate them for your cell before use. In the TCP and EGM examples all waypoints are offsets from the robot pose at start.
@@ -57,7 +72,7 @@ The real controller defaults are `192.168.125.1:1025`.
 
 Requires the EGM option and a UdpUc device on the controller (remote port 6510).
 
-1. `pip install protobuf`
+1. Activate the conda environment from [Python environment](#python-environment).
 1. Run `python EGM/egm_waypoints.py` first.
 1. Then start `EGM/EGM_Waypoints.modx` on the controller.
 
