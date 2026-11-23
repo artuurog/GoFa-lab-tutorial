@@ -15,9 +15,8 @@ Students may change RAPID and Python examples only after careful validation in s
 3. The programmed targets are known, reachable, and clear of people and obstacles.
 4. Speed and motion limits are set for supervised teaching.
 5. The same code has completed the simulation path successfully.
-6. The robot is operated only in the approved mode for the lab.
+6. Be ready to press the red button to stop robot execution.
 
 ## EGM boundary
 
-EGM setpoints are motion commands. The EGM lesson uses a bounded trajectory around an instructor-validated reference pose. Never substitute unbounded user input, arbitrary coordinates, or production motion logic into the tutorial example.
-
+EGM setpoints are motion commands. The robot controller does not validate EGM setpoints before execution, so be sure that the EGM points you are streaming are safe and in the robot range.
