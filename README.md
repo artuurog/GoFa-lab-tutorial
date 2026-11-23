@@ -78,7 +78,7 @@ Requires the EGM option and a UdpUc device on the controller (remote port 6510).
 
 ## RobotStudio stations
 
-A simple RobotStudio environment station can be found [here](https://github.com/artuurog/ABB_GoFa_socket/tree/main/envs)
+A simple RobotStudio environment station can be found [here](https://github.com/artuurog/ABB_GoFa_socket/tree/main/envs) (.rsstn file)
 
 ## Additional resources
 
