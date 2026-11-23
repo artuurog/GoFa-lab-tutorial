@@ -1,0 +1,108 @@
+MODULE TCP_Waypoints
+    ! Minimal TCP example: tcp_client.py sends waypoints, the robot reaches each one with MoveJ.
+    !
+    ! Protocol (lockstep, one reply per request, no line terminator):
+    !   PC -> robot: "dx,dy,dz"   XYZ OFFSET [mm] from the home pose, in wobj0 (orientation kept)
+    !   robot -> PC: "OK"         waypoint reached
+    !                "ERROR ..."  request rejected, robot did not move
+    !
+    ! Start this program FIRST (it waits in SocketAccept), then run tcp_client.py.
+    ! Closing the connection from the PC ends the program.
+
+    ! ---------------- Configuration ----------------
+    ! Real OmniCore controller (service port)
+    LOCAL CONST string SERVER_IP := "192.168.125.1";
+    LOCAL CONST num SERVER_PORT := 1025;
+    ! RobotStudio virtual controller: use "127.0.0.1" and port 5000 instead.
+
+    ! Home joints - calibrate for your cell before use
+    LOCAL CONST jointtarget jHome := [[140, -42, 68, 0, 64, 0], [9E9, 9E9, 9E9, 9E9, 9E9, 9E9]];
+    LOCAL CONST speeddata vTransit := v500;
+    LOCAL CONST speeddata vWaypoint := v100;
+
+    LOCAL CONST num MAX_OFFSET := 300;      ! [mm] largest accepted |dx|, |dy|, |dz|
+
+    ! ---------------- Data ----------------
+    LOCAL VAR socketdev server_socket;
+    LOCAL VAR socketdev client_socket;
+
+    ! ---------------- Main ----------------
+    PROC Main()
+        VAR string client_ip;
+        VAR string request;
+        VAR robtarget home_pose;
+        VAR robtarget target;
+        VAR num dx;
+        VAR num dy;
+        VAR num dz;
+
+        ! All waypoints are offsets from this pose, orientation and arm configuration are kept
+        MoveAbsJ jHome, vTransit, fine, tool0;
+        home_pose := CRobT(\Tool:=tool0\WObj:=wobj0);
+
+        TPWrite "Creating TCP server " + SERVER_IP + ":" + NumToStr(SERVER_PORT, 0);
+        SocketCreate server_socket;
+        SocketBind server_socket, SERVER_IP, SERVER_PORT;
+        SocketListen server_socket;
+        SocketAccept server_socket, client_socket \ClientAddress:=client_ip \Time:=WAIT_MAX;
+        TPWrite "Client connected: " + client_ip;
+
+        WHILE TRUE DO
+            SocketReceive client_socket \Str:=request \Time:=WAIT_MAX;
+            TPWrite "Received: " + request;
+
+            IF NOT ParseOffset(request, dx, dy, dz) THEN
+                SocketSend client_socket \Str:="ERROR invalid request";
+            ELSEIF Abs(dx) > MAX_OFFSET OR Abs(dy) > MAX_OFFSET OR Abs(dz) > MAX_OFFSET THEN
+                SocketSend client_socket \Str:="ERROR offset too large";
+            ELSE
+                target := home_pose;
+                target.trans.x := home_pose.trans.x + dx;
+                target.trans.y := home_pose.trans.y + dy;
+                target.trans.z := home_pose.trans.z + dz;
+
+                MoveJ target, vWaypoint, fine, tool0 \WObj:=wobj0;
+                SocketSend client_socket \Str:="OK";
+            ENDIF
+        ENDWHILE
+
+    ERROR
+        SocketClose client_socket;
+        SocketClose server_socket;
+        IF ERRNO = ERR_SOCK_CLOSED THEN
+            TPWrite "Client disconnected.";
+            RETURN;
+        ELSE
+            RAISE;
+        ENDIF
+    ENDPROC
+
+    ! Parse "dx,dy,dz" into three numbers. StrFind returns StrLen+1 when the comma is missing.
+    LOCAL FUNC bool ParseOffset(string request, VAR num dx, VAR num dy, VAR num dz)
+        VAR num len;
+        VAR num c1;
+        VAR num c2;
+        VAR string last;
+
+        len := StrLen(request);
+
+        c1 := StrFind(request, 1, ",");
+        IF c1 < 2 OR c1 >= len THEN
+            RETURN FALSE;       ! no comma, empty first value or nothing after the comma
+        ENDIF
+        c2 := StrFind(request, c1 + 1, ",");
+        IF c2 <= c1 + 1 OR c2 >= len THEN
+            RETURN FALSE;
+        ENDIF
+
+        last := StrPart(request, c2 + 1, len - c2);
+        IF StrFind(last, 1, ",") <= StrLen(last) THEN
+            RETURN FALSE;       ! more than three values
+        ENDIF
+
+        RETURN StrToVal(StrPart(request, 1, c1 - 1), dx)
+           AND StrToVal(StrPart(request, c1 + 1, c2 - c1 - 1), dy)
+           AND StrToVal(last, dz);
+    ENDFUNC
+
+ENDMODULE

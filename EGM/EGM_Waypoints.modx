@@ -1,0 +1,47 @@
+MODULE EGM_Waypoints
+    ! Minimal EGM position guidance: the waypoints are streamed by egm_waypoints.py.
+    ! Requires: EGM option and a UdpUc device (Remote Address = the PC, Remote Port = UDP_PORT
+    ! of the script, 6510). Start the Python script FIRST, then run this program.
+
+    ! ---------------- Configuration ----------------
+    ! PLACEHOLDER start joints - calibrate before use
+    LOCAL CONST jointtarget jStart := [[160, -40, 60, 0, 75, 0], [9E9, 9E9, 9E9, 9E9, 9E9, 9E9]];
+    LOCAL CONST speeddata vTransit := v100;
+
+    LOCAL CONST string EGM_CONFIG := "default";     ! EGM configuration name
+    LOCAL CONST string EGM_DEVICE := "UCdevice";    ! UdpUc device name (Transmission Protocol)
+    LOCAL CONST num EGM_COMM_TIMEOUT := 5;          ! [s] max wait for the first UDP message
+    LOCAL CONST num EGM_COND_TIME := 0.5;           ! [s] pose must be converged to end EGMRunPose
+    LOCAL CONST num EGM_RAMP_IN := 0.05;            ! [s]
+
+    LOCAL CONST egm_minmax egm_lin := [-1, 1];      ! [mm]  convergence tolerance
+    LOCAL CONST egm_minmax egm_rot := [-2, 2];      ! [deg] convergence tolerance
+
+    ! ---------------- Data ----------------
+    LOCAL VAR egmident egmID1;
+    LOCAL VAR pose posCorr := [[0, 0, 0], [1, 0, 0, 0]];
+    LOCAL VAR pose posSens := [[0, 0, 0], [1, 0, 0, 0]];
+
+    ! ---------------- Main ----------------
+    LOCAL PROC Main()
+        ! EGM must start from a fine point
+        MoveAbsJ jStart, vTransit, fine, tool0;
+
+        EGMReset egmID1;
+        EGMGetId egmID1;
+        EGMSetupUC ROB_1, egmID1, EGM_CONFIG, EGM_DEVICE \Pose \CommTimeout:=EGM_COMM_TIMEOUT;
+
+        EGMActPose egmID1 \Tool:=tool0 \WObj:=wobj0, posCorr, EGM_FRAME_WOBJ, posSens, EGM_FRAME_WOBJ
+            \x:=egm_lin \y:=egm_lin \z:=egm_lin
+            \rx:=egm_rot \ry:=egm_rot \rz:=egm_rot
+            \LpFilter:=20 \SampleRate:=4 \MaxPosDeviation:=1000;
+
+        ! Returns once the robot has reached the last waypoint and the script stops sending
+        EGMRunPose egmID1, EGM_STOP_HOLD
+            \x \y \z \rx \ry \rz
+            \CondTime:=EGM_COND_TIME \RampInTime:=EGM_RAMP_IN;
+
+        EGMReset egmID1;
+    ENDPROC
+
+ENDMODULE

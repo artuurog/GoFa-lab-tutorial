@@ -8,34 +8,25 @@ By the end of this tutorial, students will be able to:
 
 1. Run a GoFa virtual controller in RobotStudio and recognize the main motion references.
 2. Program and verify simple `MoveJ` and `MoveL` motion in RAPID.
-3. Exchange discrete commands and state messages between Python and RAPID over TCP.
-4. Run a bounded EGM trajectory in simulation, then repeat the validated procedure on a real robot under instructor supervision.
-
-## Tutorial path
-
-| Lesson | Topic | Result |
-| --- | --- | --- |
-| [00](lessons/00_setup.md) | Setup and safety | A virtual controller is ready. |
-| [01](lessons/01_rapid_motion.md) | RAPID motion | A safe point-to-point sequence runs in simulation. |
-| [02](lessons/02_tcp_protocol.md) | TCP commands and states | Python exchanges newline-delimited messages with RAPID. |
-| [03](lessons/03_egm_motion.md) | EGM guided motion | A small bounded trajectory is validated in simulation. |
-| [04](lessons/04_integrated_demo.md) | Integrated demonstration | TCP selects the demonstration and EGM supplies motion setpoints. |
+3. Exchange commands and replies between Python and RAPID over TCP.
+4. Run a bounded EGM waypoint trajectory in simulation, then repeat the validated procedure on a real robot under instructor supervision.
 
 ## Repository map
 
 ```text
-SAFETY.md                    Safety rules and real-robot checklist
-rapid/
-  lesson_01_motion.mod       RAPID module: named-position MoveJ/MoveL sequence
-  lesson_02_tcp_server.mod   RAPID module: TCP socket server
-  lesson_02_python_client.py Python client that streams poses to the TCP server
-  lesson_03_egm.mod          RAPID module: EGM motion setup
-python/
-  protocol.py                Newline-delimited TCP protocol helpers
-  tcp_client.py              Sends one command to the RAPID TCP service
-  egm_trajectory.py          Bounded Cartesian EGM trajectory (Lesson 03)
-  settings.py                Host, port and EGM configuration (instructor-provided values)
-  requirements.txt           Python dependencies (EGM client)
+SAFETY.md                      Safety rules and real-robot checklist
+RAPID/                         Step-by-step RAPID lessons
+  lesson_01_motion.mod         RAPID module: named-position MoveJ/MoveL sequence
+  lesson_02_tcp_server.mod     RAPID module: TCP socket server
+  lesson_02_python_client.py   Python client that streams poses to the TCP server
+TCP/                           Minimal TCP waypoint example
+  TCP_Waypoints.modx           RAPID module: receives "dx,dy,dz" offsets and reaches each with MoveJ
+  tcp_client.py                Python client (standard library only) that sends the waypoints
+EGM/                           Minimal EGM waypoint example
+  EGM_Waypoints.modx           RAPID module: EGM position guidance
+  egm_waypoints.py             Python UDP server that streams the waypoints to the robot
+  egm.proto                    EGM protobuf definition
+  egm_pb2.py                   Python bindings generated from egm.proto
 ```
 
 ## Safety boundary
@@ -45,7 +36,27 @@ Real-robot use requires the checklist in [SAFETY.md](SAFETY.md), validated targe
 ## Start here
 
 1. Read [Safety](SAFETY.md).
-1. Follow [Lesson 00](lessons/00_setup.md).
+1. Start with [RAPID/lesson_01_motion.mod](RAPID/lesson_01_motion.mod) in a RobotStudio virtual controller.
+1. Continue with the TCP example ([TCP/](TCP/)) and then the EGM example ([EGM/](EGM/)).
+
+## Running the examples
+
+All waypoints are offsets from the robot pose at start, and the joint start poses in the RAPID modules are placeholders: calibrate them for your cell before use.
+
+### TCP
+
+1. Load and start `TCP/TCP_Waypoints.modx` on the controller. It waits for a client.
+1. Run `python TCP/tcp_client.py`. For a RobotStudio virtual controller use `python TCP/tcp_client.py --host 127.0.0.1 --port 5000`.
+
+The real controller defaults are `192.168.125.1:1025`.
+
+### EGM
+
+Requires the EGM option and a UdpUc device on the controller (remote port 6510).
+
+1. `pip install protobuf`
+1. Run `python EGM/egm_waypoints.py` first.
+1. Then start `EGM/EGM_Waypoints.modx` on the controller.
 
 ## RobotStudio stations
 
