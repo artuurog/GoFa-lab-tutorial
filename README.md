@@ -25,12 +25,6 @@ By the end of this tutorial, students will be able to:
 
 ```text
 SAFETY.md                    Safety rules and real-robot checklist
-lessons/
-  00_setup.md                Setup and safety
-  01_rapid_motion.md         MoveJ / MoveL motion
-  02_tcp_protocol.md         TCP message protocol
-  03_egm_motion.md           EGM guided motion
-  04_integrated_demo.md      TCP + EGM demonstration
 rapid/
   lesson_01_motion.mod       RAPID module: named-position MoveJ/MoveL sequence
   lesson_02_tcp_server.mod   RAPID module: TCP socket server
