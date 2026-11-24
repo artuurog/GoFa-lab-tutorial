@@ -16,8 +16,8 @@ MODULE TCP_Waypoints
     ! RobotStudio virtual controller: use "127.0.0.1" and port 5000 instead.
 
     ! Home joints - calibrate for your cell before use
-    LOCAL CONST jointtarget jHome := [[140, -42, 68, 0, 64, 0], [9E9, 9E9, 9E9, 9E9, 9E9, 9E9]];
-    LOCAL CONST speeddata vTransit := v500;
+    LOCAL CONST jointtarget jHome := [[160, -42, 68, 0, 64, 0], [9E9, 9E9, 9E9, 9E9, 9E9, 9E9]];
+    LOCAL CONST speeddata vTransit := v100;
     LOCAL CONST speeddata vWaypoint := v100;
 
     LOCAL CONST num MAX_OFFSET := 300;      ! [mm] largest accepted |dx|, |dy|, |dz|
@@ -27,7 +27,7 @@ MODULE TCP_Waypoints
     LOCAL VAR socketdev client_socket;
 
     ! ---------------- Main ----------------
-    PROC Main()
+    LOCAL PROC Main()
         VAR string client_ip;
         VAR string request;
         VAR robtarget home_pose;
