@@ -9,7 +9,7 @@ Setup:
 The robot (UdpUc client) sends an EgmRobot message every ~4 ms to this script (UDP server).
 For every message the script replies with one EgmSensor message containing the target pose.
 
-Edit WAYPOINTS and SEGMENT_TIME below, nothing else is needed.
+Edit WAYPOINTS and SPEED below, nothing else is needed.
 """
 
 import socket
@@ -27,15 +27,15 @@ RX_BUFFER = 4096            # [bytes]
 # expressed in wobj0. The path starts at the current pose and visits them in order.
 WAYPOINTS = [
     (-200.0, 0.0, 0.0),
-    (100.0, 100.0, 0.0),
+    (100.0, 300.0, 0.0),
     (0.0, 100.0, 0.0),
     (0.0, 0.0, 0.0),
 ]
-SEGMENT_TIME = 3.0          # [s] duration of each segment (previous point -> next waypoint)
-FINAL_HOLD_TIME = 1.0       # [s] keep sending the last waypoint so the robot converges
+SPEED = 100.0               # [mm/s] average speed; each segment lasts distance / SPEED
+MIN_SEGMENT_TIME = 0.5      # [s] shortest segment, for very short moves
+REACH_TOLERANCE = 5.0       # [mm] the robot must be this close to a waypoint to move on
 
 PATH = [(0.0, 0.0, 0.0)] + WAYPOINTS
-DURATION = len(WAYPOINTS) * SEGMENT_TIME + FINAL_HOLD_TIME
 
 
 # ---------------------------------------------------------------- Trajectory
@@ -44,10 +44,19 @@ def min_jerk(s):
     return 10 * s**3 - 15 * s**4 + 6 * s**5
 
 
-def target_at(start_xyz, t):
-    """Target XYZ [mm] at time t [s]; stays on the last waypoint once the path is done."""
-    k = min(int(t // SEGMENT_TIME), len(WAYPOINTS) - 1)
-    s = min_jerk(min((t - k * SEGMENT_TIME) / SEGMENT_TIME, 1.0))
+def distance(a, b):
+    """Euclidean distance [mm] between two XYZ points."""
+    return sum((a[i] - b[i]) ** 2 for i in range(3)) ** 0.5
+
+
+def segment_time(k):
+    """Duration [s] of segment k: long moves get more time so the speed stays constant."""
+    return max(distance(PATH[k], PATH[k + 1]) / SPEED, MIN_SEGMENT_TIME)
+
+
+def target_at(start_xyz, k, t):
+    """Target XYZ [mm] on segment k, t [s] after the segment started (holds at its end)."""
+    s = min_jerk(min(t / segment_time(k), 1.0))
     p0, p1 = PATH[k], PATH[k + 1]
     return tuple(start_xyz[i] + p0[i] + s * (p1[i] - p0[i]) for i in range(3))
 
@@ -83,6 +92,7 @@ def main():
     print(f"Waiting for the robot on UDP port {UDP_PORT} ...")
 
     start_xyz, start_quat, t0 = None, None, None
+    k = 0                       # index of the segment (waypoint) being driven
     seq = 0
 
     try:
@@ -96,12 +106,22 @@ def main():
                 print(f"Robot connected: {robot_addr}, start pose {start_xyz}")
 
             t = time.monotonic() - t0
-            if t >= DURATION:
-                print("Trajectory finished")
-                break
+            target = target_at(start_xyz, k, t)
+
+            # Move on only when the segment time is over AND the robot is at the waypoint
+            if t >= segment_time(k):
+                waypoint = target_at(start_xyz, k, segment_time(k))
+                if distance(xyz, waypoint) <= REACH_TOLERANCE:
+                    print(f"Waypoint {k + 1}/{len(WAYPOINTS)} reached")
+                    k += 1
+                    t0 = time.monotonic()
+                    if k == len(WAYPOINTS):
+                        print("Trajectory finished")
+                        break
+                    target = target_at(start_xyz, k, 0.0)
 
             seq += 1
-            sock.sendto(build_target_msg(seq, target_at(start_xyz, t), start_quat), robot_addr)
+            sock.sendto(build_target_msg(seq, target, start_quat), robot_addr)
 
     except socket.timeout:
         print("No data from the robot - exiting")
