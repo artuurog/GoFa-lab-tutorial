@@ -26,7 +26,7 @@ RX_BUFFER = 4096            # [bytes]
 # Waypoints: XYZ OFFSETS [mm] from the pose the robot has when EGM starts (orientation kept),
 # expressed in wobj0. The path starts at the current pose and visits them in order.
 WAYPOINTS = [
-    (100.0, 0.0, 0.0),
+    (-200.0, 0.0, 0.0),
     (100.0, 100.0, 0.0),
     (0.0, 100.0, 0.0),
     (0.0, 0.0, 0.0),
